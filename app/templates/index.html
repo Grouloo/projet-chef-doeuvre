@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="mb-4">Prédiction de réussite</h1>
+
+<form id="predictionForm">
+    <div class="row">
+        <!-- School & Family Info -->
+        <div class="col-md-6 mb-3">
+            <div class="card">
+                <div class="card-header">École & famille</div>
+                <div class="card-body">
+                    <label>École</label>
+                    <select name="school" class="form-select">
+                        <option value="GP">Gabriel Pereira</option>
+                        <option value="MS">Mousinho da Silveira</option>
+                    </select>
+
+                    <label>Raison du choix de l'école</label>
+                    <select name="reason" class="form-select">
+                        <option value="course">Syllabus</option>
+                        <option value="home">Proximité</option>
+                        <option value="reputation">Réputation</option>
+                        <option value="other">Autre</option>
+                    </select>
+
+                    <label>Tuteur</label>
+                    <select name="guardian" class="form-select">
+                        <option value="mother">Mère</option>
+                        <option value="father">Père</option>
+                        <option value="other">Autre</option>
+                    </select>
+                    
+                    <label>Taille de la famille</label>
+                    <select name="famsize" class="form-select">
+                        <option value="GT3">> 3</option>
+                        <option value="LE3"><= 3</option>
+                    </select>
+
+                    <div class="row mt-2">
+                        <div class="col">
+                            <label>Éducation de la mère (0-4)</label>
+                            <input type="number" name="Medu" class="form-control" value="2" min="0" max="4">
+                        </div>
+                        <div class="col">
+                            <label>Éducation du père (0-4)</label>
+                            <input type="number" name="Fedu" class="form-control" value="2" min="0" max="4">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Academic Info -->
+        <div class="col-md-6 mb-3">
+            <div class="card">
+                <div class="card-header">Académique</div>
+                <div class="card-body">
+                    <label>Temps d'étude (1-4)</label>
+                    <input type="number" name="studytime" class="form-control" value="2" min="1" max="4">
+                    
+                    <label>Échecs (0-4)</label>
+                    <input type="number" name="failures" class="form-control" value="0" min="0" max="4">
+                    
+                    <label>Nombre d'absences (0-93)</label>
+                    <input type="number" name="absences" class="form-control" value="0" min="0" max="93">
+                    
+                    <label>1er trimestre (0-20)</label>
+                    <input type="number" name="G1" class="form-control" value="10" min="0" max="20">
+                    
+                    <label>2ème trimestre (0-20)</label>
+                    <input type="number" name="G2" class="form-control" value="10" min="0" max="20">
+                </div>
+            </div>
+        </div>
+
+        <!-- Lifestyle & Support (Yes/No Blocks) -->
+        <div class="col-md-6 mb-3">
+            <div class="card">
+                <div class="card-header">Vie et soutien</div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <label>Scolarité</label>
+                            <select name="schoolsup" class="form-select"><option value="no">Non</option><option value="yes">Oui</option></select>
+                        </div>
+                        <div class="col-6">
+                            <label>Famille</label>
+                            <select name="famsup" class="form-select"><option value="no">Non</option><option value="yes">Oui</option></select>
+                        </div>
+                        <div class="col-6">
+                            <label>Cours payants</label>
+                            <select name="paid" class="form-select"><option value="no">Non</option><option value="yes">Oui</option></select>
+                        </div>
+                        <div class="col-6">
+                            <label>Activités</label>
+                            <select name="activities" class="form-select"><option value="yes">Oui</option><option value="no">Non</option></select>
+                        </div>
+                        <div class="col-6">
+                            <label>A fréquenté une maternelle</label>
+                            <select name="nursery" class="form-select"><option value="yes">Oui</option><option value="no">Non</option></select>
+                        </div>
+                        <div class="col-6">
+                            <label>Souhait de poursuivre ses études</label>
+                            <select name="higher" class="form-select"><option value="yes">Oui</option><option value="no">Non</option></select>
+                        </div>
+                        <div class="col-6">
+                            <label>A accès à Internet</label>
+                            <select name="internet" class="form-select"><option value="yes">Oui</option><option value="no">Non</option></select>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-3">
+                        <label>Temps de trajet (1-4)</label>
+                        <input type="number" name="traveltime" class="form-control" value="1" min="1" max="4">
+                        
+                        <label>Temps libre (1-5)</label>
+                        <input type="number" name="freetime" class="form-control" value="3" min="1" max="5">
+                        
+                        <label>Fréquence de sortie avec ses amis (1-5)</label>
+                        <input type="number" name="goout" class="form-control" value="3" min="1" max="5">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary btn-lg w-100 mb-5">Predict Success</button>
+</form>
+
+<script>
+document.getElementById('predictionForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData.entries());
+    
+    // Type conversion for numerics
+    const numericFields = ['Medu', 'Fedu', 'traveltime', 'studytime', 'failures', 'freetime', 'goout', 'absences', 'G1', 'G2'];
+    numericFields.forEach(field => {
+        data[field] = parseInt(data[field]);
+    });
+
+    try {
+        const response = await fetch('/predict', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+        
+        if (!response.ok) {
+            const err = await response.json();
+            alert("Error: " + (err.detail || "Prediction failed"));
+            return;
+        }
+        
+        const result = await response.json();
+        document.getElementById('resultSection').classList.remove('d-none');
+        document.getElementById('predScore').textContent = result.prediction_score.toFixed(2);
+        document.getElementById('predLabel').textContent = result.prediction_label;
+        document.getElementById('predProb').textContent = (result.probabilities.pass * 100).toFixed(1) + "%";
+        
+        // Scroll to result
+        document.getElementById('resultSection').scrollIntoView({behavior: 'smooth'});
+        
+    } catch (error) {
+        console.error(error);
+        alert("Failed to connect to API");
+    }
+});
+</script>
+{% endblock %}

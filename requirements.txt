@@ -4,3 +4,13 @@ seaborn
 scikit-learn
 numpy
 missingno
+mlflow
+joblib
+fastapi
+uvicorn
+loguru
+alembic
+sqlalchemy
+pydantic
+jinja2
+python-multipart

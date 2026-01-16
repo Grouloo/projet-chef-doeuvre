@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="mb-4">Jeu de données (Top 20)</h1>
+
+{% if data %}
+<div class="table-responsive">
+    <table class="table table-bordered table-sm text-center">
+        <thead class="table-light">
+            <tr>
+                {% for col in columns %}
+                <th>{{ col }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in data %}
+            <tr>
+                {% for col in columns %}
+                <td>{{ row[col] }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="alert alert-warning">
+    Jeu de données non trouvé.
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="mb-4">Historique des prédictions</h1>
+
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Timestamp</th>
+                <th>Prédiction</th>
+                <th>Score (G3)</th>
+                <th>Entrées</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in logs %}
+            <tr>
+                <td>{{ log.id }}</td>
+                <td>{{ log.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                <td>
+                    {% if log.prediction.prediction_label == 'Pass' %}
+                        <span class="badge bg-success">L'élève va réussir</span>
+                    {% else %}
+                        <span class="badge bg-danger">L'élève va échouer</span>
+                    {% endif %}
+                </td>
+                <td>{{ log.prediction.prediction_score | round(2) }}</td>
+                <td>
+                    <small>
+                        École: {{ log.inputs.school }}, 
+                        Raison du choix de l'école: {{ log.inputs.reason }}, 
+                        Tuteur: {{ log.inputs.guardian }}, 
+                        Taille de la famille: {{ log.inputs.famsize }}, 
+                        Éducation de la mère: {{ log.inputs.Medu }}, 
+                        Éducation du père: {{ log.inputs.Fedu }}, 
+                        Temps d'étude: {{ log.inputs.studytime }}, 
+                        Échecs: {{ log.inputs.failures }}, 
+                        Nombre d'absences: {{ log.inputs.absences }}, 
+                       
+                        Scolarité: {{ log.inputs.schoolsup }}, 
+                        Famille: {{ log.inputs.famsup }}, 
+                        Cours payants: {{ log.inputs.paid }}, 
+                        Activités: {{ log.inputs.activities }}, 
+                        Fréquentation d’une maternelle: {{ log.inputs.nursery }}, 
+                        Souhait de poursuivre ses études: {{ log.inputs.higher }}, 
+                        A accès à Internet: {{ log.inputs.internet }}, 
+                        Temps de trajet: {{ log.inputs.traveltime }}, 
+                        Temps libre: {{ log.inputs.free_time }}, 
+                        Sante: {{ log.inputs.health }}, 
+                        Absences: {{ log.inputs.absences }} 
+                        1er trimestre: {{ log.inputs.G1 }}, 
+                        2ème trimestre: {{ log.inputs.G2 }}
+                    </small>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

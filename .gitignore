@@ -1,2 +1,6 @@
 .venv
 __pycache__
+mlflow.db
+sql_app.db
+logs/api.log
+mlruns
