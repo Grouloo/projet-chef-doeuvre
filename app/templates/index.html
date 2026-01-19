@@ -10,10 +10,10 @@
             <div class="card">
                 <div class="card-header">École & famille</div>
                 <div class="card-body">
-                    <label>École</label>
-                    <select name="school" class="form-select">
-                        <option value="GP">Gabriel Pereira</option>
-                        <option value="MS">Mousinho da Silveira</option>
+                    <label>Matière</label>
+                    <select name="source" class="form-select">
+                        <option value="mat">Mathématiques</option>
+                        <option value="por">Portugais</option>
                     </select>
 
                     <label>Raison du choix de l'école</label>
@@ -36,17 +36,6 @@
                         <option value="GT3">> 3</option>
                         <option value="LE3"><= 3</option>
                     </select>
-
-                    <div class="row mt-2">
-                        <div class="col">
-                            <label>Éducation de la mère (0-4)</label>
-                            <input type="number" name="Medu" class="form-control" value="2" min="0" max="4">
-                        </div>
-                        <div class="col">
-                            <label>Éducation du père (0-4)</label>
-                            <input type="number" name="Fedu" class="form-control" value="2" min="0" max="4">
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -64,12 +53,6 @@
                     
                     <label>Nombre d'absences (0-93)</label>
                     <input type="number" name="absences" class="form-control" value="0" min="0" max="93">
-                    
-                    <label>1er trimestre (0-20)</label>
-                    <input type="number" name="G1" class="form-control" value="10" min="0" max="20">
-                    
-                    <label>2ème trimestre (0-20)</label>
-                    <input type="number" name="G2" class="form-control" value="10" min="0" max="20">
                 </div>
             </div>
         </div>
@@ -116,17 +99,22 @@
                         
                         <label>Temps libre (1-5)</label>
                         <input type="number" name="freetime" class="form-control" value="3" min="1" max="5">
-                        
-                        <label>Fréquence de sortie avec ses amis (1-5)</label>
-                        <input type="number" name="goout" class="form-control" value="3" min="1" max="5">
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <button type="submit" class="btn btn-primary btn-lg w-100 mb-5">Predict Success</button>
+    <button type="submit" class="btn btn-primary btn-lg w-100 mb-5">Envoyer</button>
 </form>
+
+<div id="resultSection" class="card mt-4 d-none">
+    <div class="card-header bg-success text-white">Résultat de la prédiction</div>
+    <div class="card-body text-center">
+        <h2 class="display-4" id="predLabel"></h2>
+        <p class="lead">Probabilité de réussite: <strong id="predProb"></strong></p>
+    </div>
+</div>
 
 <script>
 document.getElementById('predictionForm').addEventListener('submit', async function(e) {
@@ -135,7 +123,7 @@ document.getElementById('predictionForm').addEventListener('submit', async funct
     const data = Object.fromEntries(formData.entries());
     
     // Type conversion for numerics
-    const numericFields = ['Medu', 'Fedu', 'traveltime', 'studytime', 'failures', 'freetime', 'goout', 'absences', 'G1', 'G2'];
+    const numericFields = ['traveltime', 'studytime', 'failures', 'freetime', 'absences'];
     numericFields.forEach(field => {
         data[field] = parseInt(data[field]);
     });
@@ -156,13 +144,16 @@ document.getElementById('predictionForm').addEventListener('submit', async funct
         }
         
         const result = await response.json();
-        document.getElementById('resultSection').classList.remove('d-none');
-        document.getElementById('predScore').textContent = result.prediction_score.toFixed(2);
-        document.getElementById('predLabel').textContent = result.prediction_label;
+        const resultDiv = document.getElementById('resultSection');
+        resultDiv.classList.remove('d-none');
+        
+        document.getElementById('predLabel').textContent = (result.prediction_label === 'Pass') ? "Réussite probable" : "Échec probable";
+        document.getElementById('predLabel').className = (result.prediction_label === 'Pass') ? "display-4 text-success" : "display-4 text-danger";
+        
         document.getElementById('predProb').textContent = (result.probabilities.pass * 100).toFixed(1) + "%";
         
         // Scroll to result
-        document.getElementById('resultSection').scrollIntoView({behavior: 'smooth'});
+        resultDiv.scrollIntoView({behavior: 'smooth'});
         
     } catch (error) {
         console.error(error);

@@ -24,6 +24,12 @@ Ce script va:
 - Sauvegarder les colonnes des caractéristiques dans `model_columns.joblib`.
 - Enregistrer les expériences dans `mlflow.db`.
 
+```bash
+alembic upgrade head
+```
+
+Cela va créer la table `prediction_logs` dans la base de données.
+
 ## Lancement de l'API
 
 ```bash

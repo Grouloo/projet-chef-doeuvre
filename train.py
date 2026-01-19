@@ -4,7 +4,7 @@ import mlflow
 import mlflow.sklearn
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
-from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import mean_squared_error, r2_score, accuracy_score
 import joblib
 import os
@@ -21,22 +21,16 @@ def load_and_clean_data():
         print("Ethical data not found. Please ensure data/ethical.csv exists.")
         return pd.DataFrame()
 
-    # Drop 'source' as it's not a student characteristic we input
-    if "source" in df.columns:
-        df = df.drop(columns=["source"])
+    # Drop columns not in the requested input list
+    # User requested inputs imply we should drop: school, Medu, Fedu, goout, G1, G2
+    # And we MUST KEEP 'source' to get source_por
+    cols_to_drop = ["school", "Medu", "Fedu", "goout", "G1", "G2"]
+    existing_to_drop = [c for c in cols_to_drop if c in df.columns]
+    if existing_to_drop:
+        df = df.drop(columns=existing_to_drop)
 
     # Clean duplicates just in case
     df = df.drop_duplicates()
-    
-    # Remove outliers for G1, G2, G3
-    for col_name in ["G1", "G2", "G3"]:
-        if col_name in df.columns:
-            Q1 = df[col_name].quantile(0.25)
-            Q3 = df[col_name].quantile(0.75)
-            IQR = Q3 - Q1
-            threshold = 1.5
-            outliers = df[(df[col_name] < Q1 - threshold * IQR) | (df[col_name] > Q3 + threshold * IQR)]
-            df = df.drop(outliers.index)
             
     return df
 
@@ -49,30 +43,10 @@ def prepare_features(df, target_cols=["G3", "Pass"]):
     
     # Save the columns structure for prediction alignment
     feature_columns = [col for col in df_encoded.columns if col not in target_cols]
-    joblib.dump(feature_columns, "model_columns.joblib")
+    joblib.dump(feature_columns, "./models/model_columns.joblib")
     
     return df_encoded, feature_columns
 
-def train_regression(df_encoded, feature_cols):
-    X = df_encoded[feature_cols]
-    y = df_encoded["G3"]
-    
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-    
-    with mlflow.start_run(run_name="Linear Regression G3"):
-        model = LinearRegression()
-        model.fit(X_train, y_train)
-        
-        predictions = model.predict(X_test)
-        rmse = np.sqrt(mean_squared_error(y_test, predictions))
-        r2 = r2_score(y_test, predictions)
-        
-        mlflow.log_metric("rmse", rmse)
-        mlflow.log_metric("r2", r2)
-        mlflow.sklearn.log_model(model, "linear_regression_model")
-        
-        print(f"Regression - RMSE: {rmse}, R2: {r2}")
-        return model
 
 def train_classification(df, feature_cols):
     # Pass column creation
@@ -89,20 +63,21 @@ def train_classification(df, feature_cols):
     
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     
-    with mlflow.start_run(run_name="Decision Tree Classification Pass"):
-        # Model params from notebook
-        model = DecisionTreeClassifier(random_state=42, max_depth=5, criterion='gini')
+    with mlflow.start_run(run_name="Random Forest Classification Pass"):
+        # Model params from notebook - using RandomForestClassifier as per ethical data analysis
+        model = RandomForestClassifier(n_estimators=100, random_state=42, max_depth=10)
         model.fit(X_train, y_train)
         
         predictions = model.predict(X_test)
         accuracy = accuracy_score(y_test, predictions)
         
         mlflow.log_metric("accuracy", accuracy)
-        mlflow.log_param("max_depth", 5)
-        mlflow.log_param("criterion", 'gini')
-        mlflow.sklearn.log_model(model, "decision_tree_model")
+        mlflow.log_param("n_estimators", 100)
+        mlflow.log_param("max_depth", 10)
+        mlflow.log_param("random_state", 42)
+        mlflow.sklearn.log_model(model, "random_forest_model")
         
-        print(f"Classification - Accuracy: {accuracy}")
+        print(f"Random Forest Classification - Accuracy: {accuracy}")
         return model
 
 if __name__ == "__main__":
@@ -113,10 +88,8 @@ if __name__ == "__main__":
     
     df_encoded, feature_columns = prepare_features(df, target_cols=["G3", "Pass"])
     
-    reg_model = train_regression(df_encoded, feature_columns)
     clf_model = train_classification(df_encoded, feature_columns)
     
     # Save models locally for FastAPI
-    joblib.dump(reg_model, "./models/regression_model.joblib")
-    joblib.dump(clf_model, "./models/classification_model.joblib")
+    joblib.dump(clf_model, "./models/model.joblib")
     print("Models and columns saved.")

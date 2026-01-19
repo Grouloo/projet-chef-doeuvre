@@ -18,6 +18,8 @@ logger.add("./logs/api.log", rotation="10 MB")
 
 
 
+
+
 app = FastAPI(title="Prédiction de la réussite des élèves")
 
 # Templates
@@ -30,14 +32,10 @@ model_cols = None
 
 @app.on_event("startup")
 def load_artifacts():
-    global reg_model, clf_model, model_cols
+    global clf_model, model_cols
     try:
-        # Assuming models are in the root directory relative to where app runs
-        # If running uvicorn app.main:app, current dir is root.
-        if os.path.exists("./models/regression_model.joblib"):
-            reg_model = joblib.load("./models/regression_model.joblib")
-        if os.path.exists("./models/classification_model.joblib"):
-            clf_model = joblib.load("./models/classification_model.joblib")
+        if os.path.exists("./models/model.joblib"):
+            clf_model = joblib.load("./models/model.joblib")
         if os.path.exists("./models/model_columns.joblib"):
             model_cols = joblib.load("./models/model_columns.joblib")
         logger.info("Models and artifacts loaded successfully.")
@@ -73,7 +71,6 @@ def health_check():
     status = {
         "status": "ok",
         "models_loaded": {
-            "regression": reg_model is not None,
             "classification": clf_model is not None,
             "columns": model_cols is not None
         }
@@ -82,7 +79,7 @@ def health_check():
 
 @app.post("/predict", response_model=schemas.PredictionOutput)
 def predict(input_data: schemas.StudentInput, db: Session = Depends(database.get_db)):
-    if not reg_model or not clf_model or not model_cols:
+    if not clf_model or not model_cols:
         raise HTTPException(status_code=503, detail="Models not loaded")
     
     try:
@@ -90,9 +87,6 @@ def predict(input_data: schemas.StudentInput, db: Session = Depends(database.get
         processed_data = preprocess_input(input_data, model_cols)
         
         # Predict
-        # Regression -> G3 score
-        g3_pred = reg_model.predict(processed_data)[0]
-        
         # Classification -> Pass/Fail
         pass_prob = clf_model.predict_proba(processed_data)[0]
         pass_pred = clf_model.predict(processed_data)[0]
@@ -100,10 +94,10 @@ def predict(input_data: schemas.StudentInput, db: Session = Depends(database.get
         label = "Pass" if pass_pred == 1 else "Fail"
         
         result = schemas.PredictionOutput(
-            prediction_score=g3_pred,
+            prediction_score=None,
             prediction_label=label,
             probabilities={"fail": pass_prob[0], "pass": pass_prob[1]},
-            model_type="hybrid"
+            model_type="classification"
         )
         
         # Log to DB
