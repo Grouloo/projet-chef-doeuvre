@@ -9,8 +9,8 @@ from sklearn.metrics import mean_squared_error, r2_score, accuracy_score
 import joblib
 import os
 
-# Set MLFlow tracking URI to a local sqlite db for persistence
-mlflow.set_tracking_uri("sqlite:///mlflow.db")
+# Set MLFlow tracking URI to a local sqlite db for persistence or env var
+mlflow.set_tracking_uri(os.getenv("MLFLOW_TRACKING_URI", "sqlite:///mlflow.db"))
 mlflow.set_experiment("School Success Prediction")
 
 def load_and_clean_data():
@@ -22,9 +22,10 @@ def load_and_clean_data():
         return pd.DataFrame()
 
     # Drop columns not in the requested input list
-    # User requested inputs imply we should drop: school, Medu, Fedu, goout, G1, G2
+    # User requested inputs imply we should drop: school, Medu, Fedu, goout
     # And we MUST KEEP 'source' to get source_por
-    cols_to_drop = ["school", "Medu", "Fedu", "goout", "G1", "G2"]
+    # G1 and G2 are restored
+    cols_to_drop = ["school", "Medu", "Fedu", "goout"]
     existing_to_drop = [c for c in cols_to_drop if c in df.columns]
     if existing_to_drop:
         df = df.drop(columns=existing_to_drop)

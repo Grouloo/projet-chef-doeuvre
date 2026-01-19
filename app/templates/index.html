@@ -53,6 +53,12 @@
                     
                     <label>Nombre d'absences (0-93)</label>
                     <input type="number" name="absences" class="form-control" value="0" min="0" max="93">
+                    
+                    <label>1er trimestre (0-20)</label>
+                    <input type="number" name="G1" class="form-control" value="10" min="0" max="20">
+                    
+                    <label>2ème trimestre (0-20)</label>
+                    <input type="number" name="G2" class="form-control" value="10" min="0" max="20">
                 </div>
             </div>
         </div>
@@ -123,11 +129,11 @@ document.getElementById('predictionForm').addEventListener('submit', async funct
     const data = Object.fromEntries(formData.entries());
     
     // Type conversion for numerics
-    const numericFields = ['traveltime', 'studytime', 'failures', 'freetime', 'absences'];
+    const numericFields = ['traveltime', 'studytime', 'failures', 'freetime', 'absences', 'G1', 'G2'];
     numericFields.forEach(field => {
         data[field] = parseInt(data[field]);
     });
-
+    
     try {
         const response = await fetch('/predict', {
             method: 'POST',

@@ -26,7 +26,9 @@ class StudentInput(BaseModel):
     # The user list: ['traveltime' 'studytime' 'failures' 'freetime' 'absences' ...]
     absences: int = Field(..., ge=0, le=93, description="Number of school absences (numeric: 0 to 93)")
     
-    # G1, G2 removed
+    # Previous grades restored
+    G1: int = Field(..., ge=0, le=20, description="First period grade")
+    G2: int = Field(..., ge=0, le=20, description="Second period grade")
 
 class PredictionOutput(BaseModel):
     prediction_score: Optional[float] = None
