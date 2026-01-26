@@ -4,3 +4,4 @@ mlflow.db
 sql_app.db
 logs/api.log
 mlruns
+uptime-kuma-data
