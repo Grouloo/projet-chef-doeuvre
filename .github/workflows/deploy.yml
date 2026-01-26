@@ -26,4 +26,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/school-success-api:${{ github.ref }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/school-success-api:${{ github.ref_name }}
