@@ -12,7 +12,13 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest of the application
-COPY . .
+COPY models /app/models
+COPY data /app/data
+COPY logs /app/logs
+COPY app /app/app
+COPY train.py /app/train.py
+COPY alembic /app/alembic
+COPY alembic.ini /app/alembic.ini
 
 # Copy and setup entrypoint
 COPY entrypoint.sh .
@@ -21,8 +27,5 @@ RUN chmod +x entrypoint.sh
 # Expose the port
 EXPOSE 8000
 
-# Set entrypoint
-ENTRYPOINT ["./entrypoint.sh"]
-
 # Run the application
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["./entrypoint.sh"]

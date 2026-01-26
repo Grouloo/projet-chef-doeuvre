@@ -11,6 +11,7 @@ import os
 
 # Set MLFlow tracking URI to a local sqlite db for persistence or env var
 mlflow.set_tracking_uri(os.getenv("MLFLOW_TRACKING_URI", "sqlite:///mlflow.db"))
+# mlflow.set_tracking_uri("sqlite:///mlflow.db")
 mlflow.set_experiment("School Success Prediction")
 
 def load_and_clean_data():
@@ -82,6 +83,7 @@ def train_classification(df, feature_cols):
         return model
 
 if __name__ == "__main__":
+    print("Cleaning data...")
     df = load_and_clean_data()
     
     # Add Pass column before encoding to ensure any potential logic depending on it (none for encoding, but good practice)
