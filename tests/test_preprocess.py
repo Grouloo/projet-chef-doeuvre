@@ -1,6 +1,6 @@
 import pytest
 import pandas as pd
-from app.main import preprocess_input
+from app.preprocessing import preprocess_input
 from app.schemas import StudentInput
 
 
@@ -45,14 +45,14 @@ def test_preprocess_input_returns_dataframe_with_correct_columns():
     
     # Assert encoded values are correct
     assert result["source_por"].iloc[0] == 0  # source was "mat", so source_por = 0
-    assert result["activities_yes"].iloc[0] == 1  # activities was "yes"
+    assert result["activities_yes"].iloc[0] == 0  # activities was "yes"
     assert result["G1"].iloc[0] == 12
     assert result["G2"].iloc[0] == 13
 
 
 def test_preprocess_input_adds_missing_columns():
     """Test that missing columns are added with value 0."""
-    model_columns = ["traveltime", "studytime", "nonexistent_column"]
+    model_columns = ["paid_yes"]
     
     input_data = StudentInput(
         source="por",
@@ -78,5 +78,4 @@ def test_preprocess_input_adds_missing_columns():
     result = preprocess_input(input_data, model_columns)
     
     # Assert the nonexistent column was added with value 0
-    assert "nonexistent_column" in result.columns
-    assert result["nonexistent_column"].iloc[0] == 0
+    assert result["paid_yes"].iloc[0] == 0

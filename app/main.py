@@ -9,13 +9,13 @@ from loguru import logger
 import sys
 from sqlalchemy.orm import Session
 from . import models, schemas, database
+from .preprocessing import preprocess_input
 import subprocess
 
 # Setup Logger
 logger.remove()
 logger.add(sys.stderr, format="{time} {level} {message}", level="INFO")
 logger.add("./logs/api.log", rotation="10 MB")
-
 
 
 
@@ -41,28 +41,6 @@ def load_artifacts():
         logger.info("Models and artifacts loaded successfully.")
     except Exception as e:
         logger.error(f"Error loading models: {e}")
-
-# Helper: Preprocess Input
-def preprocess_input(data: schemas.StudentInput, columns: list):
-    df = pd.DataFrame([data.dict()])
-    
-    # Categorical Columns to encode (Must match those in training)
-    # Ideally we should infer this, but for now we follow the schema types
-    # Since get_dummies is dynamic, we just apply it and align.
-    
-    categorical_cols = df.select_dtypes(include=['object']).columns
-    df_encoded = pd.get_dummies(df, columns=categorical_cols, drop_first=True)
-    
-    # Align columns
-    # Add missing cols with 0
-    for col in columns:
-        if col not in df_encoded.columns:
-            df_encoded[col] = 0
-            
-    # Keep only model cols and ensure order
-    df_final = df_encoded[columns]
-    
-    return df_final
 
 # Endpoints
 
