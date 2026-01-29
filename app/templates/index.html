@@ -1,170 +1,256 @@
-{% extends "base.html" %}
-
-{% block content %}
+{% extends "base.html" %} {% block content %}
 <h1 class="mb-4">Prédiction de réussite</h1>
 
 <form id="predictionForm">
-    <div class="row">
-        <!-- School & Family Info -->
-        <div class="col-md-6 mb-3">
-            <div class="card">
-                <div class="card-header">École & famille</div>
-                <div class="card-body">
-                    <label>Matière</label>
-                    <select name="source" class="form-select">
-                        <option value="mat">Mathématiques</option>
-                        <option value="por">Portugais</option>
-                    </select>
+  <div class="row">
+    <!-- School & Family Info -->
+    <div class="col-md-6 mb-3">
+      <div class="card">
+        <div class="card-header">École & famille</div>
+        <div class="card-body">
+          <label>Matière</label>
+          <select name="source" class="form-select">
+            <option value="mat">Mathématiques</option>
+            <option value="por">Portugais</option>
+          </select>
 
-                    <label>Raison du choix de l'école</label>
-                    <select name="reason" class="form-select">
-                        <option value="course">Syllabus</option>
-                        <option value="home">Proximité</option>
-                        <option value="reputation">Réputation</option>
-                        <option value="other">Autre</option>
-                    </select>
+          <label>Raison du choix de l'école</label>
+          <select name="reason" class="form-select">
+            <option value="course">Syllabus</option>
+            <option value="home">Proximité</option>
+            <option value="reputation">Réputation</option>
+            <option value="other">Autre</option>
+          </select>
 
-                    <label>Tuteur</label>
-                    <select name="guardian" class="form-select">
-                        <option value="mother">Mère</option>
-                        <option value="father">Père</option>
-                        <option value="other">Autre</option>
-                    </select>
-                    
-                    <label>Taille de la famille</label>
-                    <select name="famsize" class="form-select">
-                        <option value="GT3">> 3</option>
-                        <option value="LE3"><= 3</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Academic Info -->
-        <div class="col-md-6 mb-3">
-            <div class="card">
-                <div class="card-header">Académique</div>
-                <div class="card-body">
-                    <label>Temps d'étude (1-4)</label>
-                    <input type="number" name="studytime" class="form-control" value="2" min="1" max="4">
-                    
-                    <label>Échecs (0-4)</label>
-                    <input type="number" name="failures" class="form-control" value="0" min="0" max="4">
-                    
-                    <label>Nombre d'absences (0-93)</label>
-                    <input type="number" name="absences" class="form-control" value="0" min="0" max="93">
-                    
-                    <label>1er trimestre (0-20)</label>
-                    <input type="number" name="G1" class="form-control" value="10" min="0" max="20">
-                    
-                    <label>2ème trimestre (0-20)</label>
-                    <input type="number" name="G2" class="form-control" value="10" min="0" max="20">
-                </div>
-            </div>
-        </div>
+          <label>Tuteur</label>
+          <select name="guardian" class="form-select">
+            <option value="mother">Mère</option>
+            <option value="father">Père</option>
+            <option value="other">Autre</option>
+          </select>
 
-        <!-- Lifestyle & Support (Yes/No Blocks) -->
-        <div class="col-md-6 mb-3">
-            <div class="card">
-                <div class="card-header">Vie et soutien</div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-6">
-                            <label>Scolarité</label>
-                            <select name="schoolsup" class="form-select"><option value="no">Non</option><option value="yes">Oui</option></select>
-                        </div>
-                        <div class="col-6">
-                            <label>Famille</label>
-                            <select name="famsup" class="form-select"><option value="no">Non</option><option value="yes">Oui</option></select>
-                        </div>
-                        <div class="col-6">
-                            <label>Cours payants</label>
-                            <select name="paid" class="form-select"><option value="no">Non</option><option value="yes">Oui</option></select>
-                        </div>
-                        <div class="col-6">
-                            <label>Activités</label>
-                            <select name="activities" class="form-select"><option value="yes">Oui</option><option value="no">Non</option></select>
-                        </div>
-                        <div class="col-6">
-                            <label>A fréquenté une maternelle</label>
-                            <select name="nursery" class="form-select"><option value="yes">Oui</option><option value="no">Non</option></select>
-                        </div>
-                        <div class="col-6">
-                            <label>Souhait de poursuivre ses études</label>
-                            <select name="higher" class="form-select"><option value="yes">Oui</option><option value="no">Non</option></select>
-                        </div>
-                        <div class="col-6">
-                            <label>A accès à Internet</label>
-                            <select name="internet" class="form-select"><option value="yes">Oui</option><option value="no">Non</option></select>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-3">
-                        <label>Temps de trajet (1-4)</label>
-                        <input type="number" name="traveltime" class="form-control" value="1" min="1" max="4">
-                        
-                        <label>Temps libre (1-5)</label>
-                        <input type="number" name="freetime" class="form-control" value="3" min="1" max="5">
-                    </div>
-                </div>
-            </div>
+          <label>Taille de la famille</label>
+          <select name="famsize" class="form-select">
+            <option value="GT3">> 3</option>
+            <option value="LE3"><= 3</option>
+          </select>
         </div>
+      </div>
     </div>
 
-    <button type="submit" class="btn btn-primary btn-lg w-100 mb-5">Envoyer</button>
+    <!-- Academic Info -->
+    <div class="col-md-6 mb-3">
+      <div class="card">
+        <div class="card-header">Académique</div>
+        <div class="card-body">
+          <label>Temps d'étude hebdomadaire (1-4)</label>
+          <input
+            type="number"
+            name="studytime"
+            class="form-control"
+            value="2"
+            min="1"
+            max="4"
+          />
+
+          <label>Redoublements (1-4)</label>
+          <input
+            type="number"
+            name="failures"
+            class="form-control"
+            value="1"
+            min="1"
+            max="4"
+          />
+
+          <label>Nombre d'absences</label>
+          <input
+            type="number"
+            name="absences"
+            class="form-control"
+            value="0"
+            min="0"
+            max="93"
+          />
+
+          <label>1er trimestre (0-20)</label>
+          <input
+            type="number"
+            name="G1"
+            class="form-control"
+            value="10"
+            min="0"
+            max="20"
+          />
+
+          <label>2ème trimestre (0-20)</label>
+          <input
+            type="number"
+            name="G2"
+            class="form-control"
+            value="10"
+            min="0"
+            max="20"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Lifestyle & Support (Yes/No Blocks) -->
+    <div class="col-md-6 mb-3">
+      <div class="card">
+        <div class="card-header">Vie et soutien</div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-6">
+              <label>Soutien scolaire</label>
+              <select name="schoolsup" class="form-select">
+                <option value="no">Non</option>
+                <option value="yes">Oui</option>
+              </select>
+            </div>
+            <div class="col-6">
+              <label>Soutien familial</label>
+              <select name="famsup" class="form-select">
+                <option value="no">Non</option>
+                <option value="yes">Oui</option>
+              </select>
+            </div>
+            <div class="col-6">
+              <label>Cours payants</label>
+              <select name="paid" class="form-select">
+                <option value="no">Non</option>
+                <option value="yes">Oui</option>
+              </select>
+            </div>
+            <div class="col-6">
+              <label>Activités</label>
+              <select name="activities" class="form-select">
+                <option value="yes">Oui</option>
+                <option value="no">Non</option>
+              </select>
+            </div>
+            <div class="col-6">
+              <label>A fréquenté une maternelle</label>
+              <select name="nursery" class="form-select">
+                <option value="yes">Oui</option>
+                <option value="no">Non</option>
+              </select>
+            </div>
+            <div class="col-6">
+              <label>Souhait de poursuivre ses études</label>
+              <select name="higher" class="form-select">
+                <option value="yes">Oui</option>
+                <option value="no">Non</option>
+              </select>
+            </div>
+            <div class="col-6">
+              <label>A accès à Internet</label>
+              <select name="internet" class="form-select">
+                <option value="yes">Oui</option>
+                <option value="no">Non</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="mt-3">
+            <label>Temps de trajet (1-4)</label>
+            <input
+              type="number"
+              name="traveltime"
+              class="form-control"
+              value="1"
+              min="1"
+              max="4"
+            />
+
+            <label>Temps libre (1-5)</label>
+            <input
+              type="number"
+              name="freetime"
+              class="form-control"
+              value="3"
+              min="1"
+              max="5"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button type="submit" class="btn btn-primary btn-lg w-100 mb-5">
+    Envoyer
+  </button>
 </form>
 
 <div id="resultSection" class="card mt-4 d-none">
-    <div class="card-header bg-success text-white">Résultat de la prédiction</div>
-    <div class="card-body text-center">
-        <h2 class="display-4" id="predLabel"></h2>
-        <p class="lead">Probabilité de réussite: <strong id="predProb"></strong></p>
-    </div>
+  <div class="card-header bg-success text-white">Résultat de la prédiction</div>
+  <div class="card-body text-center">
+    <h2 class="display-4" id="predLabel"></h2>
+    <p class="lead">Probabilité de réussite: <strong id="predProb"></strong></p>
+  </div>
 </div>
 
 <script>
-document.getElementById('predictionForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    const data = Object.fromEntries(formData.entries());
-    
-    // Type conversion for numerics
-    const numericFields = ['traveltime', 'studytime', 'failures', 'freetime', 'absences', 'G1', 'G2'];
-    numericFields.forEach(field => {
-        data[field] = parseInt(data[field]);
-    });
-    
-    try {
-        const response = await fetch('/predict', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        });
-        
+  document
+    .getElementById("predictionForm")
+    .addEventListener("submit", async function (e) {
+      e.preventDefault()
+      const formData = new FormData(e.target)
+      const data = Object.fromEntries(formData.entries())
+
+      // Type conversion for numerics
+      const numericFields = [
+        "traveltime",
+        "studytime",
+        "failures",
+        "freetime",
+        "absences",
+        "G1",
+        "G2",
+      ]
+      numericFields.forEach((field) => {
+        data[field] = parseInt(data[field])
+      })
+
+      try {
+        const response = await fetch("/predict", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        })
+
         if (!response.ok) {
-            const err = await response.json();
-            alert("Error: " + (err.detail || "Prediction failed"));
-            return;
+          const err = await response.json()
+          alert("Error: " + (err.detail || "Prediction failed"))
+          return
         }
-        
-        const result = await response.json();
-        const resultDiv = document.getElementById('resultSection');
-        resultDiv.classList.remove('d-none');
-        
-        document.getElementById('predLabel').textContent = (result.prediction_label === 'Pass') ? "Réussite probable" : "Échec probable";
-        document.getElementById('predLabel').className = (result.prediction_label === 'Pass') ? "display-4 text-success" : "display-4 text-danger";
-        
-        document.getElementById('predProb').textContent = (result.probabilities.pass * 100).toFixed(1) + "%";
-        
+
+        const result = await response.json()
+        const resultDiv = document.getElementById("resultSection")
+        resultDiv.classList.remove("d-none")
+
+        document.getElementById("predLabel").textContent =
+          result.prediction_label === "Pass"
+            ? "Réussite probable"
+            : "Échec probable"
+        document.getElementById("predLabel").className =
+          result.prediction_label === "Pass"
+            ? "display-4 text-success"
+            : "display-4 text-danger"
+
+        document.getElementById("predProb").textContent =
+          (result.probabilities.pass * 100).toFixed(1) + "%"
+
         // Scroll to result
-        resultDiv.scrollIntoView({behavior: 'smooth'});
-        
-    } catch (error) {
-        console.error(error);
-        alert("Failed to connect to API");
-    }
-});
+        resultDiv.scrollIntoView({ behavior: "smooth" })
+      } catch (error) {
+        console.error(error)
+        alert("Failed to connect to API")
+      }
+    })
 </script>
 {% endblock %}

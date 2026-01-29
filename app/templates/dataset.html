@@ -1,32 +1,71 @@
-{% extends "base.html" %}
+{% extends "base.html" %} {% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="mb-0">Jeu de données (Top 20)</h1>
+  <button id="retrainBtn" class="btn btn-warning">
+    <span
+      id="retrainSpinner"
+      class="spinner-border spinner-border-sm d-none"
+      role="status"
+      aria-hidden="true"
+    ></span>
+    Réentraîner le modèle
+  </button>
+</div>
 
-{% block content %}
-<h1 class="mb-4">Jeu de données (Top 20)</h1>
+<div id="retrainAlert" class="alert d-none" role="alert"></div>
+
+<script>
+  document
+    .getElementById("retrainBtn")
+    .addEventListener("click", async function () {
+      const btn = this
+      const spinner = document.getElementById("retrainSpinner")
+      const alertDiv = document.getElementById("retrainAlert")
+
+      btn.disabled = true
+      spinner.classList.remove("d-none")
+      alertDiv.classList.add("d-none")
+
+      try {
+        const response = await fetch("/train/retrain", { method: "POST" })
+        const result = await response.json()
+
+        alertDiv.classList.remove("d-none", "alert-danger", "alert-success")
+        alertDiv.classList.add("alert-success")
+        alertDiv.textContent =
+          result.message || "Réentraînement lancé en arrière-plan."
+      } catch (error) {
+        alertDiv.classList.remove("d-none", "alert-success")
+        alertDiv.classList.add("alert-danger")
+        alertDiv.textContent = "Erreur lors du lancement du réentraînement."
+      } finally {
+        btn.disabled = false
+        spinner.classList.add("d-none")
+      }
+    })
+</script>
 
 {% if data %}
 <div class="table-responsive">
-    <table class="table table-bordered table-sm text-center">
-        <thead class="table-light">
-            <tr>
-                {% for col in columns %}
-                <th>{{ col }}</th>
-                {% endfor %}
-            </tr>
-        </thead>
-        <tbody>
-            {% for row in data %}
-            <tr>
-                {% for col in columns %}
-                <td>{{ row[col] }}</td>
-                {% endfor %}
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+  <table class="table table-bordered table-sm text-center">
+    <thead class="table-light">
+      <tr>
+        {% for col in columns %}
+        <th>{{ col }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in data %}
+      <tr>
+        {% for col in columns %}
+        <td>{{ row[col] }}</td>
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 </div>
 {% else %}
-<div class="alert alert-warning">
-    Jeu de données non trouvé.
-</div>
-{% endif %}
-{% endblock %}
+<div class="alert alert-warning">Jeu de données non trouvé.</div>
+{% endif %} {% endblock %}

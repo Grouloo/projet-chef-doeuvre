@@ -5,7 +5,7 @@ import mlflow.sklearn
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import mean_squared_error, r2_score, accuracy_score
+from sklearn.metrics import f1_score, accuracy_score
 import joblib
 import os
 
@@ -74,6 +74,8 @@ def train_classification(df, feature_cols):
         accuracy = accuracy_score(y_test, predictions)
         
         mlflow.log_metric("accuracy", accuracy)
+        mlflow.log_metric("f1-score", f1_score(y_test, predictions))
+
         mlflow.log_param("n_estimators", 100)
         mlflow.log_param("max_depth", 10)
         mlflow.log_param("random_state", 42)
